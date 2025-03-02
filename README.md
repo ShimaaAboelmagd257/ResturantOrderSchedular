@@ -47,6 +47,7 @@ This project follows the MVVM (Model-View-ViewModel) pattern for clean code and 
 https://github.com/ShimaaAboelmagd257/ResturantOrderSchedular.git
 
 2️⃣ **Open in Android Studio**
+
 3️⃣ **Run the project on an emulator or physical device**
 
 ## 🧠 Understanding the Algorithms
