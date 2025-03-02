@@ -32,7 +32,7 @@ An interactive Android app built with **Jetpack Compose** that teaches **order s
 
 ### 📥 Installation  
 1️⃣ **Clone the repository**  
-```sh
+
 https://github.com/ShimaaAboelmagd257/ResturantOrderSchedular.git
 
 2️⃣ **Open in Android Studio**
