@@ -1,4 +1,4 @@
-package com.example.resturantschadular
+package com.example.resturantschadular.model
 
 data class Order (
     val name: String,

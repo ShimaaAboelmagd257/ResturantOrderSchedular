@@ -1,4 +1,4 @@
-package com.example.resturantschadular
+package com.example.resturantschadular.ui.view
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

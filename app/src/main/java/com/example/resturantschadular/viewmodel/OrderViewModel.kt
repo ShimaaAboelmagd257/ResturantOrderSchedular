@@ -1,8 +1,9 @@
-package com.example.resturantschadular
+package com.example.resturantschadular.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.resturantschadular.model.Order
 import java.util.LinkedList
 
 class OrderViewModel : ViewModel() {
