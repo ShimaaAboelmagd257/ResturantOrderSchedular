@@ -4,6 +4,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -17,41 +18,48 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.resturantschadular.R
 import com.example.resturantschadular.model.Meal
+import com.example.resturantschadular.utl.getMeals
+import com.example.resturantschadular.viewmodel.OrderViewModel
 
 @Preview
 @Composable
 private fun prview() {
-    MenuOrder()
+  //  MenuOrder()
 }
-@Composable
-fun MenuOrder() {
 
-    val meals = listOf(
-        Meal("Burger", R.drawable.burger),
-        Meal("Pizza", R.drawable.pizza),
-        Meal("Sushi" , R.drawable.sushi),
-        Meal("Steak",R.drawable.steak),
-        Meal("Salad", R.drawable.salad)
-    )
+@Composable
+fun MenuOrder(viewModel: OrderViewModel) {
 
     val selectedMeals = remember { mutableStateListOf<Meal>() }
     var selectedAlgorithm by remember { mutableStateOf("Round Robin") }
-    val algorithmOptions = listOf("Round Robin", "FCFS" , "sjN" , "Priority Scheduling")
+    val scrollState = rememberScrollState()
 
     Column (
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp).background(color = Color.Magenta)
+            .padding(20.dp)
+            .background(color = Color.Magenta).verticalScroll(scrollState)
     ){
         Text(text = "Order Your Meals", fontSize = 30.sp , fontWeight = FontWeight.Bold, color = Color.White, modifier = Modifier.padding(horizontal = 20.dp))
 
-        LazyColumn {
-            items(meals){ meal ->
+        LazyColumn(modifier = Modifier.weight(1f)) {
+            items(getMeals()){ meal ->
                 MealCard(meal,selectedMeals)
             }
+        }
+        AlgorithmsSelection {algorithm ->
+            selectedAlgorithm = algorithm
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Button(
+            onClick = {viewModel.scheduleOrders(selectedAlgorithm,selectedMeals)}
+        ) {
+            Text(text = "Schedule")
         }
     }
 }
@@ -59,6 +67,7 @@ fun MenuOrder() {
 @Composable
 fun MealCard(meal:Meal, selectedMeals:MutableList<Meal>) {
     var isSelected by remember { mutableStateOf(false) }
+
     Card (modifier = Modifier
         .fillMaxWidth()
         .padding(8.dp)
@@ -84,9 +93,18 @@ fun MealCard(meal:Meal, selectedMeals:MutableList<Meal>) {
                     if(it) selectedMeals.add(meal) else selectedMeals.remove(meal)
                 }
             )
-
         }
-
     }
+}
 
+@Composable
+fun AlgorithmsSelection(onAlgorithmSelected:(String)-> Unit) {
+    val algorithmOptions = listOf("Round Robin", "FCFS", "sjN", "Priority Scheduling")
+
+    Column {
+        algorithmOptions.forEach{
+            algorithm ->
+            Button( onClick = {onAlgorithmSelected(algorithm)}) { Text(text = algorithm) }
+        }
+    }
 }

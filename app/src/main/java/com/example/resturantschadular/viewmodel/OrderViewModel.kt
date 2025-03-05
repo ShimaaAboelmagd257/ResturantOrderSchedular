@@ -3,28 +3,28 @@ package com.example.resturantschadular.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.resturantschadular.model.Order
+import com.example.resturantschadular.model.Meal
 import java.util.LinkedList
 
 class OrderViewModel : ViewModel() {
 
-    private val _schaduledOrders = MutableLiveData<List<Order>>()
-    val schadualedOeders: LiveData<List<Order>> = _schaduledOrders
+    private val _schaduledOrders = MutableLiveData<List<Meal>>()
+    val schadualedOeders: LiveData<List<Meal>> = _schaduledOrders
+    private var orderList = mutableListOf<Meal>()
 
-    private  val orderList = mutableListOf<Order>()
+    private fun  firstComeFirstServe(): List<Meal> {
+        return orderList.sortedBy { it.arrivalTime }
 
-    private fun  firstComeFirstServe(orders: List<Order>){
-        orders.sortedBy { it.arrivalTime }
     }
-    private fun shortestJobFirst(orders : List<Order>){
-        orders.sortedBy { it.prepTime }
+    private fun shortestJobFirst(): List<Meal>{
+        return orderList.sortedBy { it.prepTime }
     }
-    private fun priorityFirst(orders: List<Order>){
-        orders.sortedWith(compareByDescending<Order>{it.priority}.thenBy { it.arrivalTime })
+    private fun priorityFirst():List<Meal>{
+        return orderList.sortedWith(compareByDescending<Meal>{it.priority}.thenBy { it.arrivalTime })
     }
-    private fun roundRobin(orders: List<Order>, timeQuantum:Int):List<Order>{
-        val queue = LinkedList(orders) //FIFO
-        val executionLog = mutableListOf<Order>() // to store the sequence of how orders are processed
+    private fun roundRobin(timeQuantum:Int):List<Meal>{
+        val queue = LinkedList(orderList) //FIFO
+        val executionLog = mutableListOf<Meal>() // to store the sequence of how orders are processed
         var currentTime =0
 
         while (queue.isNotEmpty()){
@@ -38,6 +38,16 @@ class OrderViewModel : ViewModel() {
             currentTime += timeQuantum
         }
         return executionLog
+    }
+    fun scheduleOrders(algorithm : String, orders:List<Meal>){
+        orderList = orders.toMutableList()
+        _schaduledOrders.value=when (algorithm){
+            "FSFS" -> firstComeFirstServe()
+             "SJN" -> shortestJobFirst()
+            "Round Robin"-> roundRobin(2)
+            "Priority Scheduling" -> priorityFirst()
+            else -> emptyList()
+        }
     }
 
 
