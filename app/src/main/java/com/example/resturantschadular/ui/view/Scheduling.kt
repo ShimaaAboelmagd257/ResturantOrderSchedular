@@ -40,14 +40,22 @@ fun MenuOrder(viewModel: OrderViewModel) {
 
     Column (
         modifier = Modifier
-            .padding(20.dp)
-            .background(color = Color.Magenta).verticalScroll(scrollState)
-    ){
-        Text(text = "Order Your Meals", fontSize = 30.sp , fontWeight = FontWeight.Bold, color = Color.White, modifier = Modifier.padding(horizontal = 20.dp))
+            .fillMaxSize().padding(20.dp)
 
-        LazyColumn(modifier = Modifier.weight(1f)) {
-            items(getMeals()){ meal ->
-                MealCard(meal,selectedMeals)
+    ){
+        Text(text = "Order Your Meals", fontSize = 30.sp , fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.padding(horizontal = 20.dp))
+
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(getMeals()) { meal ->
+                    MealCard(meal, selectedMeals)
+                }
             }
         }
         AlgorithmsSelection {algorithm ->
@@ -57,6 +65,7 @@ fun MenuOrder(viewModel: OrderViewModel) {
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
+            modifier = Modifier.fillMaxWidth(),
             onClick = {viewModel.scheduleOrders(selectedAlgorithm,selectedMeals)}
         ) {
             Text(text = "Schedule")
@@ -76,13 +85,13 @@ fun MealCard(meal:Meal, selectedMeals:MutableList<Meal>) {
             if (isSelected) selectedMeals.add(meal) else selectedMeals.remove(meal)
         },
         shape = RoundedCornerShape(35.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = Color.Gray)
     ){
         Row (
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(20.dp)
         ){
-            Image(painter = painterResource(id= meal.icon), contentDescription = meal.name, modifier = Modifier.size(100.dp))
+            Image(painter = painterResource(id= meal.icon), contentDescription = meal.name, modifier = Modifier.size(40.dp))
             Spacer(modifier = Modifier.width(20.dp))
             Text(text = meal.name, fontSize = 25.sp , fontWeight = FontWeight.Medium)
             Spacer(modifier = Modifier.width(60.dp))
@@ -99,12 +108,12 @@ fun MealCard(meal:Meal, selectedMeals:MutableList<Meal>) {
 
 @Composable
 fun AlgorithmsSelection(onAlgorithmSelected:(String)-> Unit) {
-    val algorithmOptions = listOf("Round Robin", "FCFS", "sjN", "Priority Scheduling")
+    val algorithmOptions = listOf("Round Robin", "FSFS", "SJN", "Priority Scheduling")
 
     Column {
         algorithmOptions.forEach{
             algorithm ->
-            Button( onClick = {onAlgorithmSelected(algorithm)}) { Text(text = algorithm) }
+            Button( modifier = Modifier.fillMaxWidth(), onClick = {onAlgorithmSelected(algorithm)}) { Text(text = algorithm) }
         }
     }
 }
