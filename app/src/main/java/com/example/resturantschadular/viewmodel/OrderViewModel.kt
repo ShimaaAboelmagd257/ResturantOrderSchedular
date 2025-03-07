@@ -1,15 +1,14 @@
 package com.example.resturantschadular.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.example.resturantschadular.model.Meal
 import java.util.LinkedList
 
 class OrderViewModel : ViewModel() {
 
-    private val _schaduledOrders = MutableLiveData<List<Meal>>()
-    val schadualedOeders: LiveData<List<Meal>> = _schaduledOrders
+    private val _scheduledOrders = mutableStateListOf<Meal>()
+    val scheduledOrders: List<Meal> get() = _scheduledOrders
     private var orderList = mutableListOf<Meal>()
 
     private fun  firstComeFirstServe(): List<Meal> {
@@ -40,14 +39,16 @@ class OrderViewModel : ViewModel() {
         return executionLog
     }
     fun scheduleOrders(algorithm : String, orders:List<Meal>){
+        _scheduledOrders.clear()
         orderList = orders.toMutableList()
-        _schaduledOrders.value=when (algorithm){
+        val sortedOrders =when (algorithm){
             "FSFS" -> firstComeFirstServe()
              "SJN" -> shortestJobFirst()
             "Round Robin"-> roundRobin(2)
             "Priority Scheduling" -> priorityFirst()
             else -> emptyList()
         }
+        _scheduledOrders.addAll(scheduledOrders)
     }
 
 

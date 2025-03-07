@@ -9,12 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.resturantschadular.model.Meal
 import androidx.navigation.NavController
+import com.example.resturantschadular.viewmodel.OrderViewModel
 
 @Composable
-fun ScheduledOrders(scheduledMeals: List<Meal>, navController: NavController) {
+fun ScheduledOrders(viewModel: OrderViewModel, navController: NavController) {
 
+    val scheduledOrders = viewModel.scheduledOrders
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -29,14 +30,13 @@ fun ScheduledOrders(scheduledMeals: List<Meal>, navController: NavController) {
         LazyColumn (
             modifier = Modifier.weight(1f)
         ){
-           items(scheduledMeals){
+           items(scheduledOrders){
                meal -> MealCard(meal = meal)
-
            }
         }
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { navController.navigate("") }
+            onClick = { navController.navigate("menu") }
         ) {
             Text(text = "Back to menu")
         }

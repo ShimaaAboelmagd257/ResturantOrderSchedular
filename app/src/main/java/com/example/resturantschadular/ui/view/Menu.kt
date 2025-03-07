@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.resturantschadular.model.Meal
 import com.example.resturantschadular.utl.getMeals
 import com.example.resturantschadular.viewmodel.OrderViewModel
@@ -28,7 +29,7 @@ private fun prview() {
 }
 
 @Composable
-fun MenuOrder(viewModel: OrderViewModel, onScheduleComplete:(List<Meal>)->Unit) {
+fun MenuOrder(viewModel: OrderViewModel, navController: NavController) {
 
     val selectedMeals = remember { mutableStateListOf<Meal>() }
     var selectedAlgorithm by remember { mutableStateOf("Round Robin") }
@@ -73,8 +74,8 @@ fun MenuOrder(viewModel: OrderViewModel, onScheduleComplete:(List<Meal>)->Unit) 
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                val scheduledMeals = viewModel.scheduleOrders(selectedAlgorithm,selectedMeals)
-              //  onScheduleComplete(scheduledMeals)
+                viewModel.scheduleOrders(selectedAlgorithm,selectedMeals)
+                navController.navigate("schedule")
             }
 
         ) {
