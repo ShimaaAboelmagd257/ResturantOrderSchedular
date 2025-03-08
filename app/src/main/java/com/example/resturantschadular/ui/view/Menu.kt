@@ -3,6 +3,7 @@ package com.example.resturantschadular.ui.view
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.pager.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -12,59 +13,65 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.lerp
 import androidx.navigation.NavController
 import com.example.resturantschadular.model.Meal
 import com.example.resturantschadular.utl.getMeals
 import com.example.resturantschadular.viewmodel.OrderViewModel
+import kotlin.math.absoluteValue
 
 @Preview
 @Composable
 private fun prview() {
-  //  MenuOrder()
+    //MealCard(m)
 }
 
 @Composable
 fun MenuOrder(viewModel: OrderViewModel, navController: NavController) {
 
+    val mealMenu = getMeals()
+    val pagerState = rememberPagerState(pageCount = { mealMenu.size })
+
     val selectedMeals = remember { mutableStateListOf<Meal>() }
     var selectedAlgorithm by remember { mutableStateOf("Round Robin") }
-
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp)
+            .padding(10.dp)
 
     ){
-        Text(text = "Order Your Meals", fontSize = 30.sp , fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.padding(horizontal = 20.dp))
 
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-        ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(getMeals()) { meal ->
-                    MealCard(
-                        meal = meal,
-                        showCheckBox = true,
-                        isSelected = meal in selectedMeals,
-                        onSelectionChange = {
+        Text(text = "Order Your Meals", fontSize = 30.sp , fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.padding(  30.dp))
+
+            HorizontalPager(state = pagerState, contentPadding = PaddingValues(horizontal = 20.dp)
+            ) {page ->
+                val selectedMeal = mealMenu[page]
+                val pageOffset = (
+                        (pagerState.currentPage - page) + pagerState
+                            .currentPageOffsetFraction
+                        ).absoluteValue
+                val alpha = lerp(0.5f, 1f, 1f - pageOffset.coerceIn(0f, 1f))
+                MealCard(
+                    meal = selectedMeal ,
+                    showCheckBox = true,
+                    isSelected = selectedMeal in selectedMeals,
+                    onSelectionChange = {
                             selected ->
-                               if (selected) selectedMeals.add(meal) else selectedMeals.remove(meal)
+                        if (selected) selectedMeals.add(selectedMeal) else selectedMeals.remove(selectedMeal)
 
-                        }
+                    },
+                    alpha = alpha
 
-                        )
-                }
+                )
             }
-        }
+
+
         AlgorithmsSelection {algorithm ->
             selectedAlgorithm = algorithm
         }
@@ -89,37 +96,36 @@ fun MealCard(meal:Meal,
              showCheckBox: Boolean = false,
              isSelected: Boolean = false,
              onSelectionChange:((Boolean)->Unit)? =null,
-             timeServed:String?= null) {
-/*
-    var isSelected by remember { mutableStateOf(false) }
-    var selectedMeals = remember { mutableStateListOf<Meal>() }
-*/
+             timeServed:String?= null,
+             alpha: Float
+) {
 
     Card (modifier = Modifier
-        .fillMaxWidth()
-        .padding(8.dp)
+        .size(400.dp).padding(10.dp)
+        .graphicsLayer {
+            this.alpha = alpha
+        }
+
+
         .clickable {
             if (showCheckBox) onSelectionChange?.invoke(!isSelected)
         },
-        shape = RoundedCornerShape(35.dp),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Gray)
     ){
-        Row (
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(20.dp)
+        Column  (
+            horizontalAlignment = Alignment.CenterHorizontally,
+           // modifier = Modifier.padding(20.dp)
         ){
-            Image(painter = painterResource(id= meal.icon), contentDescription = meal.name, modifier = Modifier.size(40.dp))
-            Spacer(modifier = Modifier.width(20.dp))
+            Image(painter = painterResource(id= meal.icon), contentDescription = meal.name, modifier = Modifier.fillMaxSize())
+        //    Spacer(modifier = Modifier.width(20.dp))
             Text(text = meal.name, fontSize = 25.sp , fontWeight = FontWeight.Medium)
-            Spacer(modifier = Modifier.width(60.dp))
+          //  Spacer(modifier = Modifier.width(60.dp))
             if (showCheckBox){
                 Checkbox(
                     checked = isSelected,
                     onCheckedChange =  onSelectionChange
-                   /* {
 
-//                        if (it) selectedMeals.add(meal) else selectedMeals.remove(meal)
-                    }*/
                 )
             }
         }

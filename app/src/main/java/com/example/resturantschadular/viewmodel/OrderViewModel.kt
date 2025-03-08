@@ -1,5 +1,6 @@
 package com.example.resturantschadular.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.example.resturantschadular.model.Meal
@@ -12,14 +13,21 @@ class OrderViewModel : ViewModel() {
     private var orderList = mutableListOf<Meal>()
 
     private fun  firstComeFirstServe(): List<Meal> {
-        return orderList.sortedBy { it.arrivalTime }
+        val sortedMeals = orderList.sortedBy { it.arrivalTime }
+        Log.d("OrderViewModel-firstComeFirstServe",""+sortedMeals)
+        return sortedMeals
 
     }
     private fun shortestJobFirst(): List<Meal>{
-        return orderList.sortedBy { it.prepTime }
+        val sortedMeals = orderList.sortedBy { it.prepTime }
+        Log.d("OrderViewModel-shortestJobFirst",""+sortedMeals)
+
+        return sortedMeals
     }
     private fun priorityFirst():List<Meal>{
-        return orderList.sortedWith(compareByDescending<Meal>{it.priority}.thenBy { it.arrivalTime })
+        val sortedMeals =  orderList.sortedWith(compareByDescending<Meal>{it.priority}.thenBy { it.arrivalTime })
+        Log.d("OrderViewModel-priorityFirst",""+sortedMeals)
+        return sortedMeals
     }
     private fun roundRobin(timeQuantum:Int):List<Meal>{
         val queue = LinkedList(orderList) //FIFO
@@ -48,7 +56,9 @@ class OrderViewModel : ViewModel() {
             "Priority Scheduling" -> priorityFirst()
             else -> emptyList()
         }
-        _scheduledOrders.addAll(scheduledOrders)
+        Log.d("OrderViewModel-scheduleOrders",""+sortedOrders)
+
+        _scheduledOrders.addAll(sortedOrders)
     }
 
 

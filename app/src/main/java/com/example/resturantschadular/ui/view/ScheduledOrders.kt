@@ -31,7 +31,7 @@ fun ScheduledOrders(viewModel: OrderViewModel, navController: NavController) {
             modifier = Modifier.weight(1f)
         ){
            items(scheduledOrders){
-               meal -> MealCard(meal = meal)
+              // meal -> MealCard(meal = meal)
            }
         }
         Button(

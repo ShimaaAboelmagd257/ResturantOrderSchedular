@@ -42,8 +42,8 @@ android {
 dependencies {
 
 
-   // implementation(libs.androidx.navigation:navigation-compose)
-    implementation("androidx.navigation:navigation-compose:2.8.8")
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.accompanist.pager)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
