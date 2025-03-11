@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,7 +48,7 @@ fun MenuOrder(viewModel: OrderViewModel, navController: NavController) {
 
     ){
 
-        Text(text = "Order Your Meals", fontSize = 30.sp , fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.padding(  30.dp))
+        Text(text = "Order Your Meals", fontSize = 30.sp , fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.padding(  20.dp))
 
             HorizontalPager(state = pagerState, contentPadding = PaddingValues(horizontal = 20.dp)
             ) {page ->
@@ -72,9 +73,9 @@ fun MenuOrder(viewModel: OrderViewModel, navController: NavController) {
             }
 
 
-        AlgorithmsSelection {algorithm ->
+       /* AlgorithmsSelection {algorithm ->
             selectedAlgorithm = algorithm
-        }
+        }*/
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -101,7 +102,7 @@ fun MealCard(meal:Meal,
 ) {
 
     Card (modifier = Modifier
-        .size(400.dp).padding(10.dp)
+        .size(450.dp).padding(10.dp)
         .graphicsLayer {
             this.alpha = alpha
         }
@@ -111,23 +112,32 @@ fun MealCard(meal:Meal,
             if (showCheckBox) onSelectionChange?.invoke(!isSelected)
         },
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Gray)
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ){
+
+            Image(painter = painterResource(id= meal.icon), contentDescription = meal.name, modifier = Modifier.size(300.dp), contentScale = ContentScale.Crop)
+            Spacer(modifier = Modifier.height(10.dp))
         Column  (
-            horizontalAlignment = Alignment.CenterHorizontally,
-           // modifier = Modifier.padding(20.dp)
-        ){
-            Image(painter = painterResource(id= meal.icon), contentDescription = meal.name, modifier = Modifier.fillMaxSize())
-        //    Spacer(modifier = Modifier.width(20.dp))
-            Text(text = meal.name, fontSize = 25.sp , fontWeight = FontWeight.Medium)
-          //  Spacer(modifier = Modifier.width(60.dp))
-            if (showCheckBox){
+              modifier = Modifier.padding(start = 5.dp),
+            // modifier = Modifier.padding(20.dp)
+        ) {
+            Text(text = meal.name, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+            Text(
+                text = "Ready for " + meal.prepTime + "Min",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
+            Text(text = meal.caption, fontSize = 16.sp, fontWeight = FontWeight.Normal)
+
+            /* if (showCheckBox){
                 Checkbox(
                     checked = isSelected,
                     onCheckedChange =  onSelectionChange
 
                 )
-            }
+            }*/
         }
     }
 }
