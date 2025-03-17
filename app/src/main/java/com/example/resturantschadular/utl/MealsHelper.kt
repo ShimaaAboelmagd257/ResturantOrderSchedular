@@ -12,7 +12,7 @@ fun getMeals(): List<Meal> {
             arrivalTime = getCurrentTime(),
             servedTime = getCurrentTime(),
             icon = R.drawable.sushi,
-            caption = "Fresh, delicate, and expertly rolled—your perfect bite of Japanese delight!"
+            caption = "Fresh, delicate, and expertly rolled your perfect bite of Japanese delight!"
         ),
         Meal(
             name = "Burger",
@@ -21,7 +21,7 @@ fun getMeals(): List<Meal> {
             arrivalTime = getCurrentTime(),
             servedTime = getCurrentTime(),
             icon = R.drawable.burger,
-            caption = "Juicy beef, melted cheese, and crispy toppings—every bite is pure satisfaction!"
+            caption = "Juicy beef, melted cheese  every bite is pure satisfaction!"
         ),
         Meal(
             name = "Salad",
@@ -30,7 +30,7 @@ fun getMeals(): List<Meal> {
             arrivalTime = getCurrentTime(),
             servedTime = getCurrentTime(),
             icon = R.drawable.salad,
-            caption = "Light, refreshing, and packed with nutrients—your go-to for a healthy meal!"
+            caption = "Light and packed with nutrients your go-to for a healthy meal!"
         ),
         Meal(
             name = "Steak",

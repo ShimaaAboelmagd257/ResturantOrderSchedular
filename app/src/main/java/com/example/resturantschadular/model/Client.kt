@@ -2,5 +2,5 @@ package com.example.resturantschadular.model
 
 data class Client (
     val meal: Meal,
-    val reaction: Int
+    val reaction: String
 )
