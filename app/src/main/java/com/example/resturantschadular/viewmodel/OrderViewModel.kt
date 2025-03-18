@@ -54,7 +54,7 @@ class OrderViewModel : ViewModel() {
     fun scheduleOrders(algorithm : String, orders:List<Meal>){
 
         _scheduledOrders.clear()
-        _selectedAlgorithm.value =""
+        _selectedAlgorithm.value = ""
         mealMenu = orders.toMutableList()
         val sortedOrders =when (algorithm){
             "FCFS" -> firstComeFirstServe()

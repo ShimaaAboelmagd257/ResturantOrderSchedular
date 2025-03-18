@@ -42,16 +42,16 @@ fun MenuOrder(viewModel: OrderViewModel,clientViewModel: ClientViewModel, navCon
     val mealMenu = getMeals()
     val pagerState = rememberPagerState(pageCount = { mealMenu.size })
     val selectedMeals = remember { mutableStateListOf<Meal>() }
-    var selectedAlgorithm = viewModel.selectedAlgorithm
+    val selectedAlgorithm = remember { mutableStateOf("") }
+    //var selectedAlgorithm  =""
     val scrollState = rememberScrollState()
 
-    
+
     Column (
         modifier = Modifier
             .fillMaxSize()
             .padding(10.dp)
             .verticalScroll(scrollState)
-
     ){
 
         Text(text = "Order Your Meals", fontSize = 30.sp , fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.padding(  20.dp))
@@ -80,12 +80,11 @@ fun MenuOrder(viewModel: OrderViewModel,clientViewModel: ClientViewModel, navCon
 
                 )
             }
+        Text(text = "Select an algorithm", fontSize = 30.sp , fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.padding( 20.dp))
 
-        AlgorithmsSelection (selectedAlgorithm = selectedAlgorithm,
-            onAlgorithmSelected = {algorithm -> selectedAlgorithm = algorithm }
+        AlgorithmsSelection ( selectedAlgorithm = selectedAlgorithm.value,
+            onAlgorithmSelected = {algorithm -> selectedAlgorithm.value = algorithm }
         )
-
-
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -93,7 +92,7 @@ fun MenuOrder(viewModel: OrderViewModel,clientViewModel: ClientViewModel, navCon
             modifier = Modifier.fillMaxWidth(),
             onClick = {
                 selectedMeals.forEach{ clientViewModel.addClientOrder(it)}
-                viewModel.scheduleOrders(selectedAlgorithm, selectedMeals)
+                viewModel.scheduleOrders(selectedAlgorithm.value, selectedMeals)
 
                 navController.navigate("schedule")
             }
@@ -160,7 +159,7 @@ fun MealCard(meal:Meal,
 }
 
 @Composable
-fun AlgorithmsSelection(onAlgorithmSelected:(String)-> Unit, selectedAlgorithm:String) {
+fun AlgorithmsSelection(onAlgorithmSelected:(String)-> Unit, selectedAlgorithm:String ) {
     val algorithmOptions = getAlgorithms()
     val horizontalScroll = rememberScrollState()
 
@@ -168,34 +167,35 @@ fun AlgorithmsSelection(onAlgorithmSelected:(String)-> Unit, selectedAlgorithm:S
         modifier = Modifier
             .fillMaxWidth()
             .horizontalScroll(horizontalScroll),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(15.dp)
     ){
       algorithmOptions.forEach { algorithm ->
-          val isSelected = selectedAlgorithm == algorithm.name
+        val isSelected = selectedAlgorithm == algorithm.name
+
           Card(
               modifier = Modifier
-                  .size(120.dp)
-                 // .alpha(if (selectedAlgorithm.isEmpty() || isSelected) 1f else 0.5f)
-              ,
-                  //.clickable { if (!isSelected) onAlgorithmSelected(algorithm.name) },
-              shape = RoundedCornerShape(15.dp),
+                  .size(240.dp)
+                   .alpha(if (selectedAlgorithm.isEmpty() || isSelected) 1f else 0.5f)
+                  .clickable { onAlgorithmSelected(algorithm.name) },
+              shape = RoundedCornerShape(30.dp),
               elevation = CardDefaults.cardElevation(4.dp),
               colors = CardDefaults.cardColors(
-                  //containerColor = if(!isSelected) Color.White else Color.LightGray
+                  Color.White
+                //  containerColor = if(isSelected) Color.White else Color.LightGray
               )
           ) {
 
               Column (
                   modifier = Modifier.fillMaxSize(),
-                  horizontalAlignment = Alignment.CenterHorizontally
+                 horizontalAlignment = Alignment.CenterHorizontally,
+                  verticalArrangement = Arrangement.spacedBy(7.dp)
               ){
-                  Image(painter = painterResource(id= algorithm.icon), contentDescription = algorithm.name, modifier = Modifier.size(15.dp), contentScale = ContentScale.Crop)
-                  Text(text = algorithm.name, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                  Image(painter = painterResource(id= algorithm.icon), contentDescription = algorithm.name, modifier = Modifier.size(150.dp), contentScale = ContentScale.FillBounds)
+                  Text(text = algorithm.name, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                   Button(
-                      onClick = { /*if(isSelected)*/ onAlgorithmSelected(algorithm.name) },
+                      modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                      onClick = { onAlgorithmSelected(algorithm.name) },
                       colors = ButtonDefaults.buttonColors(containerColor = if(isSelected) Color.Green else Color.Black),
-
-                      // enabled =  !isSelected
                   ) {
                       Text(text = if(isSelected) "Selected" else "Select")
                   }
