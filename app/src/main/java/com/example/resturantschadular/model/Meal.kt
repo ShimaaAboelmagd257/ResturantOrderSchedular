@@ -1,11 +1,13 @@
 package com.example.resturantschadular.model
 
+
 data class Meal(
     val name: String,
-    val prepTime: Int, // Minutes required to prepare the meal
-    val priority: Int, // 1 (low) to 5 (high)
-    val arrivalTime: Int, // Time when order was placed
-    val servedTime: Int ,
-    val icon: Int, // Icon resource ID
-    val caption: String
+    val prepTime: Int,  // Time required to prepare
+    val priority: Int,
+    val arrivalTime: Long,
+    var startTime: Long = 0L,  // When meal preparation starts
+    var servedTime: Long = 0L, // When the meal is actually served
+    val icon: Int,
+    val caption: String,
 )

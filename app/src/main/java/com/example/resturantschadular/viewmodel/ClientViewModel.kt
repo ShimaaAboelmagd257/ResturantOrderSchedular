@@ -10,23 +10,34 @@ import com.example.resturantschadular.utl.getCurrentTime
 class ClientViewModel :ViewModel() {
     private val _clientsOrders = mutableStateListOf<Client>()
     val clientsOrders: List<Client> get() = _clientsOrders
-
-    fun addClientOrder(meal: Meal){
+    private var timeTracker = getCurrentTime()
+    fun addClientOrder(meal: Meal) {
         _clientsOrders.clear()
-        val servedTime = getCurrentTime() + meal.prepTime
-        val reaction = getClientReaction(meal.prepTime,servedTime)
-        Log.d("ClientViewModel-addClientOrder","ADD "+meal.name)
+        val startTime = timeTracker
+        val endTime = startTime + (meal.prepTime * 1000L) // Convert minutes to milliseconds
+        timeTracker = endTime // Update for the next meal
 
-        _clientsOrders.add(Client(meal,reaction))
+        val reaction = getClientReaction(meal.prepTime, endTime)
+
+        val clientOrder = Client(
+            meal = meal,
+            reaction = reaction
+        )
+
+        _clientsOrders.add(clientOrder)
+        Log.d("ClientViewModel", "Added Client Order: $clientOrder")
     }
 
 
 
-    fun getClientReaction(prepTime:Int,servedTime : Int):String{
+    fun getClientReaction(prepTime:Int,servedTime : Long):String{
         Log.d("ClientViewModel-getClientReaction","--------")
+        val timeTaken = (servedTime- getCurrentTime()) /1000
+        Log.d("ClientViewModel-getClientReaction"," timeTaken: "+timeTaken)
+
         return when{
-            servedTime <= prepTime + 2 ->"happy"
-            servedTime in (prepTime+3)..(prepTime + 6) -> "sad"
+            timeTaken <= prepTime + 2 ->"happy"
+            timeTaken in (prepTime+3)..(prepTime + 6) -> "sad"
             else -> "angry"
          }
     }

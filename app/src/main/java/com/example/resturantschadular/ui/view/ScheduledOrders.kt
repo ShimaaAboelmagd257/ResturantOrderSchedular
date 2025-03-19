@@ -29,7 +29,7 @@ fun ScheduledOrders(
 
     val scheduledOrders = orderViewModel.scheduledOrders
     val selectedAlgorithm = orderViewModel.selectedAlgorithm
-    val clientsOrders = clientViewModel.clientsOrders
+    //val clientsOrders = clientViewModel.clientsOrders
 
     val pagerState = rememberPagerState(pageCount = { scheduledOrders.size })
 
@@ -47,7 +47,7 @@ fun ScheduledOrders(
         HorizontalPager(state = pagerState, contentPadding = PaddingValues(horizontal = 20.dp)
         ) {page ->
             val scheduleMeal = scheduledOrders[page]
-            val client = clientsOrders.find { it.meal == scheduleMeal }
+          //  val client = clientsOrders.find { it.meal == scheduleMeal }
             val reaction  = clientViewModel.getClientReaction(scheduleMeal.prepTime, scheduleMeal.servedTime)
             val pageOffset = (
                     (pagerState.currentPage - page) + pagerState
@@ -58,7 +58,6 @@ fun ScheduledOrders(
                 meal = scheduleMeal ,
                 isOrdered = true,
                 onOrderClick = {},
-                showReaction = true,
                 reaction = reaction,
                 alpha = alpha
 

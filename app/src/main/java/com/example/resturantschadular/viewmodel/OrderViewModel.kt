@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.resturantschadular.model.Meal
+import com.example.resturantschadular.utl.getCurrentTime
+import com.example.resturantschadular.utl.getMeals
 import java.util.LinkedList
 
 class OrderViewModel : ViewModel() {
@@ -16,6 +18,8 @@ class OrderViewModel : ViewModel() {
     val selectedAlgorithm: String get() = _selectedAlgorithm.value
 
     private var mealMenu = mutableListOf<Meal>()
+
+
 
     private fun  firstComeFirstServe(): List<Meal> {
         val sortedMeals = mealMenu.sortedBy { it.arrivalTime }
@@ -52,9 +56,9 @@ class OrderViewModel : ViewModel() {
         return executionLog
     }
     fun scheduleOrders(algorithm : String, orders:List<Meal>){
-
         _scheduledOrders.clear()
         _selectedAlgorithm.value = ""
+      //  _mealMenu.addAll(orders)
         mealMenu = orders.toMutableList()
         val sortedOrders =when (algorithm){
             "FCFS" -> firstComeFirstServe()
