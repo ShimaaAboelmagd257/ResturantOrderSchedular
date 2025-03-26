@@ -13,6 +13,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
@@ -25,8 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import androidx.navigation.NavController
-import com.example.resturantschadular.model.Meal
-import com.example.resturantschadular.utl.getMeals
 import com.example.resturantschadular.viewmodel.ClientViewModel
 import com.example.resturantschadular.viewmodel.OrderViewModel
 import kotlin.math.absoluteValue
@@ -34,10 +33,10 @@ import kotlin.math.absoluteValue
 
 @Composable
 fun MenuOrder(viewModel: OrderViewModel,clientViewModel: ClientViewModel, navController: NavController) {
-
-    val mealMenu = getMeals()
+    val mealMenu = viewModel.mealMenu
+  //  val mealMenu = getMeals()
     val pagerState = rememberPagerState(pageCount = { mealMenu.size })
-    val selectedMeals = remember { mutableStateListOf<Meal>() }
+  //  val selectedMeals = remember { mutableStateListOf<Meal>() }
     val selectedAlgorithm = remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
     val selectedMealNames = remember { mutableStateListOf<String>() }
@@ -48,8 +47,9 @@ fun MenuOrder(viewModel: OrderViewModel,clientViewModel: ClientViewModel, navCon
             .padding(10.dp)
             .verticalScroll(scrollState)
     ){
+        Spacer(modifier = Modifier.height(20.dp))
 
-        Text(text = "Order Your Meals", fontSize = 30.sp , fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.padding(  20.dp))
+        Text(text = "Order Your Meals", fontSize = 30.sp , fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.padding(  10.dp))
 
             HorizontalPager(state = pagerState, contentPadding = PaddingValues(horizontal = 20.dp)
             ) {page ->
@@ -68,19 +68,14 @@ fun MenuOrder(viewModel: OrderViewModel,clientViewModel: ClientViewModel, navCon
                             selectedMealNames.remove(meal.name)
                         } else {
                         selectedMealNames.add(meal.name)
-                            selectedMeals.add(meal)
-                        clientViewModel.addClientOrder(meal)
                     }
-
                     },
                     alpha = alpha
 
                 )
-                Log.d("OrderMenuMealCrd-","selectedMeals $selectedMeals")
             }
-        Spacer(modifier = Modifier.height(10.dp))
 
-        Text(text = "Select an algorithm", fontSize = 30.sp , fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.padding( 20.dp))
+        Text(text = "Select an algorithm", fontSize = 30.sp , fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.padding( 10.dp))
 
         AlgorithmsSelection ( selectedAlgorithm = selectedAlgorithm.value,
             onAlgorithmSelected = {algorithm -> selectedAlgorithm.value = algorithm }
@@ -91,13 +86,13 @@ fun MenuOrder(viewModel: OrderViewModel,clientViewModel: ClientViewModel, navCon
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                selectedMeals.forEach{ clientViewModel.addClientOrder(it)}
-                viewModel.scheduleOrders(selectedAlgorithm.value, selectedMeals)
-
+                val selectedMeals = mealMenu.filter { it.name in selectedMealNames }
+                viewModel.scheduleOrders(selectedAlgorithm.value, selectedMeals,clientViewModel)
                 navController.navigate("schedule")
-            }
+                Log.d("Res/OrderViewModel-selectedMeals"," selectedMeals = $selectedMeals")
+            }, colors = ButtonDefaults.buttonColors(containerColor =Color.Black)
 
-        ) {
+            ) {
             Text(text = "Schedule Your Order")
         }
     }

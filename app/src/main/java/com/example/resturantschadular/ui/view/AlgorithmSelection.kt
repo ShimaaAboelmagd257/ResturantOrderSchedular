@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -46,10 +47,10 @@ fun AlgorithmsSelection(onAlgorithmSelected:(String)-> Unit, selectedAlgorithm:S
 
             Card(
                 modifier = Modifier
-                    .size(240.dp)
+                    .size(190.dp)
                     .alpha(if (selectedAlgorithm.isEmpty() || isSelected) 1f else 0.5f)
                     .clickable { onAlgorithmSelected(algorithm.name) },
-                shape = RoundedCornerShape(30.dp),
+                shape = RoundedCornerShape(20.dp),
                 elevation = CardDefaults.cardElevation(4.dp),
                 colors = CardDefaults.cardColors(
                     Color.White
@@ -60,17 +61,17 @@ fun AlgorithmsSelection(onAlgorithmSelected:(String)-> Unit, selectedAlgorithm:S
                 Column (
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(7.dp)
+                    verticalArrangement = Arrangement.spacedBy(5.dp)
                 ){
-                    Image(painter = painterResource(id= algorithm.icon), contentDescription = algorithm.name, modifier = Modifier.size(150.dp), contentScale = ContentScale.FillBounds)
+                    Image(painter = painterResource(id= algorithm.icon), contentDescription = algorithm.name, modifier = Modifier.fillMaxWidth().height(100.dp), contentScale = ContentScale.FillBounds)
                     Text(text = algorithm.name, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     Button(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                        modifier = Modifier.fillMaxWidth().size(40.dp).padding(horizontal = 10.dp),
                         onClick = { onAlgorithmSelected(algorithm.name) },
                         colors = ButtonDefaults.buttonColors(containerColor = if(isSelected) Color.Green else Color.Black),
                     ) {
                         Text(text = if(isSelected) "Selected" else "Select")
-                        Log.d("OrderAlgorithmCard-", "isOrdered $isSelected")
+                        Log.d("Res/OrderAlgorithmCard-", "isOrdered $isSelected")
 
                     }
                 }

@@ -7,73 +7,100 @@ import androidx.lifecycle.ViewModel
 import com.example.resturantschadular.model.Meal
 import com.example.resturantschadular.utl.getCurrentTime
 import com.example.resturantschadular.utl.getMeals
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.util.LinkedList
 
 class OrderViewModel : ViewModel() {
 
-    private val _scheduledOrders = mutableStateListOf<Meal>()
-    val scheduledOrders: List<Meal> get() = _scheduledOrders
+    private val _scheduledOrders = MutableStateFlow<List<Meal>>(emptyList())
+    val scheduledOrders: StateFlow<List<Meal>> = _scheduledOrders.asStateFlow()
 
     private val _selectedAlgorithm = mutableStateOf("")
     val selectedAlgorithm: String get() = _selectedAlgorithm.value
 
-    private var mealMenu = mutableListOf<Meal>()
+    private val _mealMenu = mutableStateListOf<Meal>()
+    val mealMenu: List<Meal> get() = _mealMenu
 
-
-
-    private fun  firstComeFirstServe(): List<Meal> {
-        val sortedMeals = mealMenu.sortedBy { it.arrivalTime }
-        Log.d("OrderViewModel-firstComeFirstServe",""+sortedMeals)
-        return sortedMeals
-
+    init {
+        loadMeals()
     }
-    private fun shortestJobNext(): List<Meal>{
-        val sortedMeals = mealMenu.sortedBy { it.prepTime }
-        Log.d("OrderViewModel-shortestJobNext",""+sortedMeals)
 
-        return sortedMeals
+    private fun loadMeals() {
+        _mealMenu.clear()
+        _mealMenu.addAll(getMeals())
     }
-    private fun priorityFirst():List<Meal>{
-        val sortedMeals =  mealMenu.sortedWith(compareByDescending<Meal>{it.priority}.thenBy { it.arrivalTime })
-        Log.d("OrderViewModel-priorityFirst",""+sortedMeals)
-        return sortedMeals
-    }
-    private fun roundRobin(timeQuantum:Int):List<Meal>{
-        val queue = LinkedList(mealMenu) //FIFO
-        val executionLog = mutableListOf<Meal>() // to store the sequence of how orders are processed
-        var currentTime =0
 
-        while (queue.isNotEmpty()){
-            val order = queue.poll() // Takes the first order from the queue for processing
-            if(order.prepTime > timeQuantum){
-                executionLog.add(order.copy(prepTime = order.prepTime-timeQuantum))
-                queue.offer(order.copy(prepTime =  order.prepTime - timeQuantum))
-            }else{
-                executionLog.add(order.copy(prepTime =  order.prepTime))
+    private fun roundRobin(meals: List<Meal>, timeQuantum: Int): List<Meal> {
+        val queue = LinkedList(meals.map { it.copy(prepTime = it.prepTime) })
+        val finalOrders = mutableListOf<Meal>()
+        var currentTime = System.currentTimeMillis()
+        val startTimes = mutableMapOf<String, Long>()
+
+        while (queue.isNotEmpty()) {
+            val meal = queue.poll()
+
+            if (meal.name !in startTimes) {
+                startTimes[meal.name] = currentTime
             }
-            currentTime += timeQuantum
+
+            val executionTime = minOf(meal.prepTime, timeQuantum)
+            val servedTime = currentTime + (executionTime * 1000L)
+            val remainingTime = meal.prepTime - executionTime
+
+            if (remainingTime > 0) {
+                queue.offer(meal.copy(prepTime = remainingTime))
+            } else {
+                finalOrders.add(meal.copy(prepTime = 0, servedTime = servedTime, startTime = startTimes[meal.name] ?: currentTime))
+            }
+
+            currentTime = servedTime
         }
-        return executionLog
+
+        return finalOrders
     }
-    fun scheduleOrders(algorithm : String, orders:List<Meal>){
-        _scheduledOrders.clear()
-        _selectedAlgorithm.value = ""
-      //  _mealMenu.addAll(orders)
-        mealMenu = orders.toMutableList()
-        val sortedOrders =when (algorithm){
-            "FCFS" -> firstComeFirstServe()
-             "SJN" -> shortestJobNext()
-            "Round Robin"-> roundRobin(2)
-            "Priority Scheduling" -> priorityFirst()
-            else -> emptyList()
-        }
-        _scheduledOrders.addAll(sortedOrders)
-        _selectedAlgorithm.value=algorithm
-        Log.d("OrderViewModel-scheduleOrders",""+sortedOrders)
-        Log.d("OrderViewModel-scheduleOrders","algorithm: "+algorithm)
 
 
-    }
+   fun scheduleOrders(algorithm: String, selectedMeals: List<Meal>, clientViewModel: ClientViewModel) {
+
+       var timeTracker = System.currentTimeMillis()
+       val sortedOrders = when (algorithm) {
+           "FCFS" -> selectedMeals.sortedBy { it.arrivalTime }
+           "SJN" -> selectedMeals.sortedBy { it.prepTime }
+           "Priority Scheduling" -> selectedMeals.sortedByDescending { it.priority }
+           "Round Robin" -> roundRobin(selectedMeals, 2)
+           else -> selectedMeals
+       }
+       val updatedMeals = sortedOrders.map { meal ->
+           val startTime = maxOf(timeTracker, meal.arrivalTime) // ✅ Ensure order affects timing
+           val servedTime = startTime + (meal.prepTime * 60*1000L)
+           servedTime.also { timeTracker = it }
+           meal.copy(servedTime = servedTime, startTime = startTime)
+       }
+      // updatedMeals.forEach { clientViewModel.addClientOrder(it) }
+        _scheduledOrders.value = updatedMeals
+       _selectedAlgorithm.value = algorithm
+       Log.d("Res/OrderViewModel-scheduleOrders", "Final Meals: $sortedOrders")
+   }
 
 
 }
+
+/*private fun  firstComeFirstServe(): List<Meal> {
+      val sortedMeals = mealMenu.sortedBy { it.arrivalTime }
+      Log.d("Res/OrderViewModel-firstComeFirstServe",""+sortedMeals)
+      return sortedMeals
+
+  }
+  private fun shortestJobNext(): List<Meal>{
+      val sortedMeals = mealMenu.sortedBy { it.prepTime }
+      Log.d("Res/OrderViewModel-shortestJobNext",""+sortedMeals)
+
+      return sortedMeals
+  }
+  private fun priorityFirst():List<Meal>{
+      val sortedMeals =  mealMenu.sortedWith(compareByDescending<Meal>{it.priority}.thenBy { it.arrivalTime })
+      Log.d("Res/OrderViewModel-priorityFirst",""+sortedMeals)
+      return sortedMeals
+  }*/

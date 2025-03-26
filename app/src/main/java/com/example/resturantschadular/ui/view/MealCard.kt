@@ -13,8 +13,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -24,7 +27,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.resturantschadular.model.Meal
-import com.example.resturantschadular.utl.getLottieReactionAnimation
+import com.example.resturantschadular.utl.GetLottieReactionAnimation
+import com.example.resturantschadular.utl.formatTimestamp
+import kotlinx.coroutines.delay
 
 @Composable
 fun MealCard(meal: Meal,
@@ -41,14 +46,15 @@ fun MealCard(meal: Meal,
         .graphicsLayer {
             this.alpha = alpha
         },
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(35.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ){
+        Image(painter = painterResource(id= meal.icon), contentDescription = meal.name, modifier = Modifier.size(300.dp), contentScale = ContentScale.Crop)
+
         Column  (
-            modifier = Modifier.padding( 5.dp),
-            // modifier = Modifier.padding(20.dp)
+           // modifier = Modifier.fillMaxSize(),
+             modifier = Modifier.padding(5.dp)
         ) {
-            Image(painter = painterResource(id= meal.icon), contentDescription = meal.name, modifier = Modifier.size(300.dp), contentScale = ContentScale.Crop)
             Spacer(modifier = Modifier.height(10.dp))
 
             Text(text = meal.name, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
@@ -71,18 +77,32 @@ fun MealCard(meal: Meal,
                         .fillMaxWidth()
                 ) {
                     Text(text = if(isOrdered) "Ordered" else "Order Now")
-                    Log.d("OrderMenuMealCrd-","isOrdered $isOrdered")
+                    Log.d("Res/OrderMenuMealCrd-","isOrdered $isOrdered")
 
                 }
             }else{
                 Spacer(modifier = Modifier.height(15.dp))
-                Text(text = "served after"+meal.servedTime, fontSize = 16.sp, fontWeight = FontWeight.Normal)
-                getLottieReactionAnimation(reaction)
-
-
+                //GetLottieReactionAnimation(reaction)
+                Text(
+                    text = "Arrival: ${formatTimestamp(meal.arrivalTime)}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = "Prep Time: ${meal.prepTime} min",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = "Start Time: ${formatTimestamp(meal.startTime)}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = "Served Time: ${formatTimestamp(meal.servedTime)}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
 
 
         }
     }
 }
+

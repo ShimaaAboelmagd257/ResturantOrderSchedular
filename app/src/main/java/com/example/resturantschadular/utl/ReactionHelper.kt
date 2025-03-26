@@ -7,10 +7,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.*
-import com.example.resturantschadular.R
 
 @Composable
-fun getLottieReactionAnimation(reaction: String) {
+fun GetLottieReactionAnimation(reaction: String) {
 
 
     val context = LocalContext.current
@@ -19,7 +18,7 @@ fun getLottieReactionAnimation(reaction: String) {
         "happy" -> "happy.json"
         "sad" -> "sad.json"
         "angry" -> "angry.json"
-        else -> "happy.json"
+        else -> ""
     }
       val composition by rememberLottieComposition(
         LottieCompositionSpec.Asset(animationFile)
