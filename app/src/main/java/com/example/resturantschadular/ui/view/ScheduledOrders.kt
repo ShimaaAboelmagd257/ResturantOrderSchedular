@@ -17,14 +17,12 @@ import androidx.compose.ui.util.lerp
 import androidx.navigation.NavController
 import com.example.resturantschadular.model.Client
 import com.example.resturantschadular.utl.GetLottieReactionAnimation
-import com.example.resturantschadular.viewmodel.ClientViewModel
 import com.example.resturantschadular.viewmodel.OrderViewModel
 import kotlin.math.absoluteValue
 
 @Composable
 fun ScheduledOrders(
     orderViewModel: OrderViewModel,
-    clientViewModel: ClientViewModel,
     navController: NavController
 ) {
 
@@ -74,16 +72,7 @@ fun ScheduledOrders(
     
 }
 
-@Composable
-fun ClientCard(client: Client) {
-   Card(modifier = Modifier.padding(10.dp)) {
-       Column (horizontalAlignment = Alignment.CenterHorizontally){
-           Text(text = client.meal.name, fontSize = 20.sp)
-           GetLottieReactionAnimation(client.reaction)
-       }
-   }
 
 
-}
 
 

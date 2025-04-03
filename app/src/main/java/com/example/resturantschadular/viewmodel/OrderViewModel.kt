@@ -62,7 +62,7 @@ class OrderViewModel : ViewModel() {
     }
 
 
-   fun scheduleOrders(algorithm: String, selectedMeals: List<Meal>, clientViewModel: ClientViewModel) {
+   fun scheduleOrders(algorithm: String, selectedMeals: List<Meal>) {
 
        var timeTracker = System.currentTimeMillis()
        val sortedOrders = when (algorithm) {
@@ -78,7 +78,6 @@ class OrderViewModel : ViewModel() {
            servedTime.also { timeTracker = it }
            meal.copy(servedTime = servedTime, startTime = startTime)
        }
-      // updatedMeals.forEach { clientViewModel.addClientOrder(it) }
         _scheduledOrders.value = updatedMeals
        _selectedAlgorithm.value = algorithm
        Log.d("Res/OrderViewModel-scheduleOrders", "Final Meals: $sortedOrders")

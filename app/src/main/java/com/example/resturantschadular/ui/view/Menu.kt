@@ -20,17 +20,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import androidx.navigation.NavController
-import com.example.resturantschadular.viewmodel.ClientViewModel
 import com.example.resturantschadular.viewmodel.OrderViewModel
 import kotlin.math.absoluteValue
 
 
 @Composable
-fun MenuOrder(viewModel: OrderViewModel,clientViewModel: ClientViewModel, navController: NavController) {
+fun MenuOrder(viewModel: OrderViewModel,
+               navController: NavController
+) {
+
     val mealMenu = viewModel.mealMenu
-  //  val mealMenu = getMeals()
     val pagerState = rememberPagerState(pageCount = { mealMenu.size })
-  //  val selectedMeals = remember { mutableStateListOf<Meal>() }
     val selectedAlgorithm = remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
     val selectedMealNames = remember { mutableStateListOf<String>() }
@@ -81,8 +81,8 @@ fun MenuOrder(viewModel: OrderViewModel,clientViewModel: ClientViewModel, navCon
             modifier = Modifier.fillMaxWidth(),
             onClick = {
                 val selectedMeals = mealMenu.filter { it.name in selectedMealNames }
-                viewModel.scheduleOrders(selectedAlgorithm.value, selectedMeals,clientViewModel)
-                navController.navigate("schedule")
+                viewModel.scheduleOrders(selectedAlgorithm.value, selectedMeals)
+                navController.navigate("scheduleJson")
                 Log.d("Res/OrderViewModel-selectedMeals"," selectedMeals = $selectedMeals")
             }, colors = ButtonDefaults.buttonColors(containerColor =Color.Black)
 

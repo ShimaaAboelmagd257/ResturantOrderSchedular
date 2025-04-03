@@ -32,7 +32,6 @@ fun MealCard(meal: Meal,
              showOrderButton: Boolean = false,
              isOrdered: Boolean = false,
              onOrderClick:()->Unit,
-             reaction: String="",
              alpha: Float
 ) {
 
@@ -78,7 +77,6 @@ fun MealCard(meal: Meal,
                 }
             }else{
                 Spacer(modifier = Modifier.height(15.dp))
-                //GetLottieReactionAnimation(reaction)
                 Text(
                     text = "Arrival: ${formatTimestamp(meal.arrivalTime)}",
                     style = MaterialTheme.typography.bodyMedium
