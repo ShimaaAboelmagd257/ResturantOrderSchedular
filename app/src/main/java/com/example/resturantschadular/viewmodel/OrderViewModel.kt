@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.resturantschadular.model.Meal
-import com.example.resturantschadular.utl.getCurrentTime
 import com.example.resturantschadular.utl.getMeals
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,6 +36,7 @@ class OrderViewModel : ViewModel() {
         val finalOrders = mutableListOf<Meal>()
         var currentTime = System.currentTimeMillis()
         val startTimes = mutableMapOf<String, Long>()
+        val orginalPrepTime = meals.associateBy ({it.name},{it.prepTime})
 
         while (queue.isNotEmpty()) {
             val meal = queue.poll()
@@ -52,7 +52,12 @@ class OrderViewModel : ViewModel() {
             if (remainingTime > 0) {
                 queue.offer(meal.copy(prepTime = remainingTime))
             } else {
-                finalOrders.add(meal.copy(prepTime = 0, servedTime = servedTime, startTime = startTimes[meal.name] ?: currentTime))
+                finalOrders.add(meal.copy(
+                    prepTime = orginalPrepTime[meal.name] ?: meal.prepTime,
+                    servedTime = servedTime,
+                    startTime = startTimes[meal.name] ?: currentTime
+                )
+                )
             }
 
             currentTime = servedTime
@@ -73,7 +78,7 @@ class OrderViewModel : ViewModel() {
            else -> selectedMeals
        }
        val updatedMeals = sortedOrders.map { meal ->
-           val startTime = maxOf(timeTracker, meal.arrivalTime) // ✅ Ensure order affects timing
+           val startTime = maxOf(timeTracker, meal.arrivalTime)
            val servedTime = startTime + (meal.prepTime * 60*1000L)
            servedTime.also { timeTracker = it }
            meal.copy(servedTime = servedTime, startTime = startTime)

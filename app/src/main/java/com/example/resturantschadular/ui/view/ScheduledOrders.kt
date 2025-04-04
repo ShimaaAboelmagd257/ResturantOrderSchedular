@@ -4,12 +4,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,8 +35,10 @@ fun ScheduledOrders(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(40.dp)
+            .padding(10.dp)
     ) {
+        Spacer(modifier = Modifier.height(20.dp))
+
         Text(
             text = "Scheduled Orders selected by $selectedAlgorithm ",
             fontSize = 30.sp,
@@ -62,7 +66,7 @@ fun ScheduledOrders(
 
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { navController.navigate("menu") }
+            onClick = { navController.navigate("menu") }, colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
         ) {
             Text(text = "Back to menu")
         }

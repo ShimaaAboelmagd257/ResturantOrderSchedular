@@ -1,6 +1,7 @@
 package com.example.resturantschadular.ui.view
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -15,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,6 +30,7 @@ import kotlin.math.absoluteValue
 fun MenuOrder(viewModel: OrderViewModel,
                navController: NavController
 ) {
+    val context = LocalContext.current
 
     val mealMenu = viewModel.mealMenu
     val pagerState = rememberPagerState(pageCount = { mealMenu.size })
@@ -80,11 +83,23 @@ fun MenuOrder(viewModel: OrderViewModel,
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                val selectedMeals = mealMenu.filter { it.name in selectedMealNames }
-                viewModel.scheduleOrders(selectedAlgorithm.value, selectedMeals)
-                navController.navigate("scheduleJson")
-                Log.d("Res/OrderViewModel-selectedMeals"," selectedMeals = $selectedMeals")
-            }, colors = ButtonDefaults.buttonColors(containerColor =Color.Black)
+                when {
+                    selectedAlgorithm.value.isNullOrEmpty() -> {
+                        Toast.makeText(context, "Please Select an Algorithm!", Toast.LENGTH_SHORT).show()
+                    }
+                    selectedMealNames.isNullOrEmpty()->{
+                        Toast.makeText(context,"Please Select at least one meal to order!", Toast.LENGTH_SHORT).show()
+                    }
+
+                    else -> {
+                        val selectedMeals = mealMenu.filter { it.name in selectedMealNames }
+                        viewModel.scheduleOrders(selectedAlgorithm.value, selectedMeals)
+                        navController.navigate("scheduleJson")
+                        Log.d("Res/OrderViewModel-selectedMeals", " selectedMeals = $selectedMeals")
+                    }
+                }
+            }
+            , colors = ButtonDefaults.buttonColors(containerColor =Color.Black)
 
             ) {
             Text(text = "Schedule Your Order")
