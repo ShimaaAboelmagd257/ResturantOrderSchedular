@@ -65,12 +65,14 @@ class OrderViewModel : ViewModel() {
 
         return finalOrders
     }
+    fun setSelectedAlgorithm(algorithm: String) {
+        _selectedAlgorithm.value = algorithm
+    }
 
-
-   fun scheduleOrders(algorithm: String, selectedMeals: List<Meal>) {
+   fun scheduleOrders( selectedMeals: List<Meal>) {
 
        var timeTracker = System.currentTimeMillis()
-       val sortedOrders = when (algorithm) {
+       val sortedOrders = when (selectedAlgorithm) {
            "FCFS" -> selectedMeals.sortedBy { it.arrivalTime }
            "SJN" -> selectedMeals.sortedBy { it.prepTime }
            "Priority Scheduling" -> selectedMeals.sortedByDescending { it.priority }
@@ -84,7 +86,7 @@ class OrderViewModel : ViewModel() {
            meal.copy(servedTime = servedTime, startTime = startTime)
        }
         _scheduledOrders.value = updatedMeals
-       _selectedAlgorithm.value = algorithm
+    //   _selectedAlgorithm.value = algorithm
        Log.d("Res/OrderViewModel-scheduleOrders", "Final Meals: $sortedOrders")
    }
 

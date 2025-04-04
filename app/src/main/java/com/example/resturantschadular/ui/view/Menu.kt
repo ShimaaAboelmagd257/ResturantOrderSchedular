@@ -34,7 +34,7 @@ fun MenuOrder(viewModel: OrderViewModel,
 
     val mealMenu = viewModel.mealMenu
     val pagerState = rememberPagerState(pageCount = { mealMenu.size })
-    val selectedAlgorithm = remember { mutableStateOf("") }
+   // val selectedAlgorithm = remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
     val selectedMealNames = remember { mutableStateListOf<String>() }
 
@@ -72,11 +72,11 @@ fun MenuOrder(viewModel: OrderViewModel,
                 )
             }
 
-        Text(text = "Select an algorithm", fontSize = 30.sp , fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.padding( 10.dp))
+      /*
 
         AlgorithmsSelection ( selectedAlgorithm = selectedAlgorithm.value,
             onAlgorithmSelected = {algorithm -> selectedAlgorithm.value = algorithm }
-        )
+        )*/
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -84,25 +84,23 @@ fun MenuOrder(viewModel: OrderViewModel,
             modifier = Modifier.fillMaxWidth(),
             onClick = {
                 when {
-                    selectedAlgorithm.value.isNullOrEmpty() -> {
-                        Toast.makeText(context, "Please Select an Algorithm!", Toast.LENGTH_SHORT).show()
-                    }
+
                     selectedMealNames.isNullOrEmpty()->{
                         Toast.makeText(context,"Please Select at least one meal to order!", Toast.LENGTH_SHORT).show()
                     }
 
                     else -> {
                         val selectedMeals = mealMenu.filter { it.name in selectedMealNames }
-                        viewModel.scheduleOrders(selectedAlgorithm.value, selectedMeals)
-                        navController.navigate("scheduleJson")
+                        viewModel.scheduleOrders(selectedMeals)
+                        navController.navigate("selectAlgorithm")
                         Log.d("Res/OrderViewModel-selectedMeals", " selectedMeals = $selectedMeals")
                     }
                 }
             }
             , colors = ButtonDefaults.buttonColors(containerColor =Color.Black)
 
-            ) {
-            Text(text = "Schedule Your Order")
+        ) {
+            Text(text = "I can order Now")
         }
     }
 }
