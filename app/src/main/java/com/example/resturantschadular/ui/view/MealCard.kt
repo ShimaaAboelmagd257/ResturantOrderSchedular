@@ -77,10 +77,10 @@ fun MealCard(meal: Meal,
                 }
             }else{
                 Spacer(modifier = Modifier.height(15.dp))
-                Text(
+               /* Text(
                     text = "Arrival: ${formatTimestamp(meal.arrivalTime)}",
                     style = MaterialTheme.typography.bodyMedium
-                )
+                )*/
                 Text(
                     text = "Prep Time: ${meal.prepTime} min",
                     style = MaterialTheme.typography.bodyMedium

@@ -32,7 +32,6 @@ fun AlgorithmsSelection(  viewModel: OrderViewModel , navController: NavControll
     val algorithmOptions = getAlgorithms()
 
 
-
        Column (modifier = Modifier.padding(10.dp)){
            Spacer(modifier = Modifier.height(25.dp))
 
@@ -74,7 +73,7 @@ fun AlgorithmsSelection(  viewModel: OrderViewModel , navController: NavControll
                             painter = painterResource(id = algorithm.icon),
                             contentDescription = algorithm.name,
                             modifier = Modifier.fillMaxWidth().height(150.dp),
-                            contentScale = ContentScale.FillBounds
+                            contentScale = ContentScale.Fit
                         )
 
                         Text(text = algorithm.name, fontSize = 16.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(vertical = 8.dp))
